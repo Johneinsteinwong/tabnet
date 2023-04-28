@@ -87,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html">README</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#tabnet-attentive-interpretable-tabular-learning">TabNet : Attentive Interpretable Tabular Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#what-is-new">What is new ?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#what-problems-does-pytorch-tabnet-handle">What problems does pytorch-tabnet handle?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#how-to-use-it">How to use it?</a></li>
@@ -533,7 +534,7 @@
 
 <div class="viewcode-block" id="RMSLE"><a class="viewcode-back" href="../../generated_docs/pytorch_tabnet.html#pytorch_tabnet.metrics.RMSLE">[docs]</a><span class="k">class</span> <span class="nc">RMSLE</span><span class="p">(</span><span class="n">Metric</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Mean squared logarithmic error regression loss.</span>
+<span class="sd">    Root Mean squared logarithmic error regression loss.</span>
 <span class="sd">    Scikit-implementation:</span>
 <span class="sd">    https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_squared_log_error.html</span>
 <span class="sd">    Note: In order to avoid error, negative predictions are clipped to 0.</span>
@@ -561,7 +562,7 @@
 <span class="sd">            RMSLE of predictions vs targets.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">y_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">y_score</span><span class="p">,</span> <span class="n">a_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">a_max</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">mean_squared_log_error</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mean_squared_log_error</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="UnsupervisedMetric"><a class="viewcode-back" href="../../generated_docs/pytorch_tabnet.html#pytorch_tabnet.metrics.UnsupervisedMetric">[docs]</a><span class="k">class</span> <span class="nc">UnsupervisedMetric</span><span class="p">(</span><span class="n">Metric</span><span class="p">):</span>

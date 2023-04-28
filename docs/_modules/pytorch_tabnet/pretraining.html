@@ -87,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html">README</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#tabnet-attentive-interpretable-tabular-learning">TabNet : Attentive Interpretable Tabular Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#what-is-new">What is new ?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#what-problems-does-pytorch-tabnet-handle">What problems does pytorch-tabnet handle?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../generated_docs/README.html#how-to-use-it">How to use it?</a></li>
@@ -167,7 +168,8 @@
     <span class="n">create_explain_matrix</span><span class="p">,</span>
     <span class="n">filter_weights</span><span class="p">,</span>
     <span class="n">PredictDataset</span><span class="p">,</span>
-    <span class="n">check_input</span>
+    <span class="n">check_input</span><span class="p">,</span>
+    <span class="n">create_group_matrix</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torch.nn.utils</span> <span class="kn">import</span> <span class="n">clip_grad_norm_</span>
 <span class="kn">from</span> <span class="nn">pytorch_tabnet.pretraining_utils</span> <span class="kn">import</span> <span class="p">(</span>
@@ -333,6 +335,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pretraining_ratio&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pretraining_ratio</span> <span class="o">=</span> <span class="mf">0.5</span>
         <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_matrix</span> <span class="o">=</span> <span class="n">create_group_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grouped_features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dim</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">tab_network</span><span class="o">.</span><span class="n">TabNetPretraining</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_dim</span><span class="p">,</span>
             <span class="n">pretraining_ratio</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pretraining_ratio</span><span class="p">,</span>
@@ -345,10 +350,13 @@
             <span class="n">cat_emb_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cat_emb_dim</span><span class="p">,</span>
             <span class="n">n_independent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_independent</span><span class="p">,</span>
             <span class="n">n_shared</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_shared</span><span class="p">,</span>
+            <span class="n">n_shared_decoder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_shared_decoder</span><span class="p">,</span>
+            <span class="n">n_indep_decoder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_indep_decoder</span><span class="p">,</span>
             <span class="n">epsilon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span>
             <span class="n">virtual_batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">virtual_batch_size</span><span class="p">,</span>
             <span class="n">momentum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">momentum</span><span class="p">,</span>
             <span class="n">mask_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_type</span><span class="p">,</span>
+            <span class="n">group_attention_matrix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">group_matrix</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
         <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">reducing_matrix</span> <span class="o">=</span> <span class="n">create_explain_matrix</span><span class="p">(</span>
